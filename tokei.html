@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html>
+<head>
+<style>
+* {
+  background-color:black;
+  text-align:center;
+  color:#ACF;
+}
+h1 {
+  font-family: 'Chalkduster','Corbel','Serif';
+  margin: 0 auto;
+}
+</style>
+</head>
+<body>
+<h1 id="date_str">hoge</h1>
+<h1 id="time_str">hoge</h1>
+<div>
+<svg id="svg" viewBox="0 0 200 200">
+<defs>
+<linearGradient id="g1">
+<stop offset="0.2" stop-color="#03F"/>
+<stop offset="0.8" stop-color="#125"/>
+</linearGradient>
+<radialGradient
+        gradientUnits="userSpaceOnUse"
+        id="rg1"
+        cx="10"
+        cy="20"
+        r="200"
+        spreadMethod="pad">
+<stop offset="0%" stop-color="#03F"/>
+<stop offset="100%" stop-color="#125"/>
+</radialGradient>
+
+</defs>
+<circle cx="100"
+        cy="100"
+        r="80"
+        stroke="#880"
+        fill="url(#rg1)"/>
+<g id="longhand">
+  <path stroke="gray"
+        stroke-width="2"
+        fill="none"
+        d="M 100 100 L 100 30"/>
+</g>
+<g id="shorthand">
+  <path stroke="white"
+        stroke-width="5"
+        fill="none"
+        d="M 100 100 L 100 58"/>
+</g>
+<g id="secondhand">
+  <path stroke="black"
+        stroke-width="0.3"
+        fill="none"
+        d="M 100 100 L 100 23"/>
+</g>
+</svg>
+</div>
+<script>
+function clock(){
+  // time:
+  const time = new Date();
+  const Y = time.getFullYear();
+  const M = (time.getMonth()+1);
+  const D = time.getDate();
+  const h = time.getHours();
+  const m = time.getMinutes();
+  const s = time.getSeconds();
+  // digital
+  document.getElementById('date_str').innerHTML = 
+                Y            + " / " +
+          ('00'+M).slice(-2) + " / " +
+          ('00'+D).slice(-2);
+  document.getElementById('time_str').innerHTML = 
+          ('00'+h).slice(-2) + " : " +
+          ('00'+m).slice(-2) + " : " +
+          ('00'+s).slice(-2);
+  // long hand
+  const lh = document.getElementById('longhand');
+  lh.setAttribute('transform','rotate('+(m*6)+',100,100)');
+  const sh = document.getElementById('shorthand');
+  sh.setAttribute('transform','rotate('+(h*30+m/2)+',100,100)');
+  const sech = document.getElementById('secondhand');
+  sech.setAttribute('transform','rotate('+(s*6)+',100,100)');
+
+  setTimeout(clock, 1000-time.getMilliseconds());
+}
+
+// once
+const svg = document.getElementById('svg');
+const SVGNS = 'http://www.w3.org/2000/svg';
+for(let i=0;i<12;i++){
+  const cos = Math.cos(i*30*Math.PI/180);
+  const sin = Math.sin(i*30*Math.PI/180);
+  let tickmark = document.createElementNS(SVGNS,'line');
+  tickmark.setAttribute('x1',100 + 80 * cos);
+  tickmark.setAttribute('y1',100 + 80 * sin);
+  tickmark.setAttribute('x2',100 + 75 * cos);
+  tickmark.setAttribute('y2',100 + 75 * sin);
+  tickmark.setAttribute('stroke','white');
+  svg.appendChild(tickmark);
+}
+
+clock();
+</script>
+</body>
+</html>
